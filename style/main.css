@@ -20,6 +20,61 @@
             --spacing-lg: 4rem;
             --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --shadow-sm: 0 2px 10px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.12);
+        }
+
+        body.dark-mode {
+            --color-primary: #2d5a5a;
+            --color-text: #e0e0e0;
+            --color-light: #1a1a1a;
+            --color-white: #222222;
+            --color-ink: #f0f0f0;
+            --bg-about: linear-gradient(180deg, #1a1a1a 0%, #222 100%);
+            --bg-activities: linear-gradient(180deg, #1d1d1d 0%, #252525 100%);
+            --bg-aims: linear-gradient(180deg, #1a1a1a 0%, #222 100%);
+            --bg-events: linear-gradient(180deg, #1d1d1d 0%, #252525 100%);
+            --bg-gallery: linear-gradient(180deg, #1a1a1a 0%, #222 100%);
+            color-scheme: dark;
+        }
+
+        body.dark-mode body {
+            background: #121212;
+        }
+
+        body.dark-mode .nav-logo, body.dark-mode h1, body.dark-mode h2, body.dark-mode h3 {
+            color: var(--color-white);
+        }
+
+        body.dark-mode .event-card, body.dark-mode .feature-card, body.dark-mode .aim-card {
+            background: #2a2a2a;
+            border-color: #333;
+        }
+
+        body.dark-mode .event-date {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .dark-mode-toggle {
+            background: transparent;
+            border: 1px solid var(--color-secondary);
+            color: var(--color-secondary);
+            cursor: pointer;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            margin-left: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dark-mode-toggle:hover {
+            background: var(--color-secondary);
+            color: var(--color-white);
         }
 
         * {
@@ -1185,12 +1240,81 @@
             transition: all 0.6s ease 0.4s;
         }
 
-        .footer-bottom.active {
-            opacity: 1;
-            transform: translateY(0);
+        .zelle-box {
+            margin-top: 2.5rem;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            border: 1px solid var(--color-secondary);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: var(--shadow-md);
         }
 
-        /* Aims & Objectives Section */
+        .zelle-icon {
+            background: var(--color-secondary);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zelle-icon span {
+            font-size: 2.5rem;
+        }
+
+        .zelle-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+
+        .zelle-info p {
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .zelle-id {
+            background: var(--color-light);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            color: var(--color-primary);
+            display: inline-block;
+            border: 1px dashed var(--color-secondary);
+        }
+
+        .footer-phone-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        body.dark-mode .zelle-box {
+            background: rgba(42, 42, 42, 0.7);
+        }
+
+        body.dark-mode .zelle-id {
+            background: #333;
+            color: var(--color-secondary);
+        }
+
+        @media (max-width: 600px) {
+            .zelle-box {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.5rem;
+                gap: 1rem;
+            }
+        }
         #aims {
             background: var(--bg-aims);
         }
@@ -1210,12 +1334,15 @@
             padding: 2.5rem;
             border-radius: 20px;
             text-align: center;
-            transition: var(--transition-bounce);
+            transition: transform 0.1s ease, box-shadow 0.3s ease, opacity 0.6s ease;
             border: 1px solid rgba(201, 169, 97, 0.1);
             position: relative;
             overflow: hidden;
             opacity: 0;
             transform: translateY(40px);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            cursor: pointer;
         }
 
         .aim-card.active {
@@ -1223,49 +1350,142 @@
             transform: translateY(0);
         }
 
-        .aim-card::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--color-secondary), #d4b570);
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
-        }
-
-        .aim-card:hover::before {
-            transform: scaleX(1);
-        }
-
         .aim-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+            border-color: var(--color-secondary);
+        }
+
+        .aim-card > * {
+            transform: translateZ(20px);
         }
 
         .aim-icon {
-            font-size: 3rem;
             margin-bottom: 1.5rem;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             transition: var(--transition-bounce);
+            color: var(--color-secondary);
+        }
+
+        .aim-icon .material-symbols-outlined {
+            font-size: 3.5rem;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
         }
 
         .aim-card:hover .aim-icon {
-            transform: scale(1.2) rotate(5deg);
+            transform: translateZ(50px) scale(1.1) rotate(5deg);
+            color: var(--color-primary);
+        }
+
+        body.dark-mode .aim-card:hover .aim-icon {
+            color: var(--color-secondary);
         }
 
         .aim-card h3 {
             color: var(--color-primary);
-            margin-bottom: 0.8rem;
-            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
             font-weight: 600;
+            transform: translateZ(30px);
         }
 
         .aim-card p {
             margin-bottom: 0;
             line-height: 1.7;
-            color: #666;
+            color: var(--color-text);
+            opacity: 0.9;
+            transform: translateZ(20px);
+        }
+
+        .aim-card .learn-more-hint {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--color-secondary);
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(10px) translateZ(10px);
+            transition: var(--transition);
+            display: block;
+        }
+
+        .aim-card:hover .learn-more-hint {
+            opacity: 1;
+            transform: translateY(0) translateZ(10px);
+        }
+
+        /* Detail Modal */
+        .detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .detail-modal.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .detail-modal-content {
+            background: var(--color-white);
+            padding: 3rem;
+            border-radius: 24px;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            transform: scale(0.9);
+            transition: var(--transition-bounce);
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .detail-modal.is-open .detail-modal-content {
+            transform: scale(1);
+        }
+
+        .detail-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: var(--color-text);
+            line-height: 1;
+        }
+
+        .detail-modal .aim-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .detail-modal h3 {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .detail-modal p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--color-text);
+        }
+
+        body.dark-mode .detail-modal-content {
+            background: #2a2a2a;
         }
 
         /* Events Section */
@@ -1286,8 +1506,8 @@
             padding: 1.35rem;
             display: grid;
             gap: 0.9rem;
-            transition: var(--transition);
-            box-shadow: 0 16px 35px rgba(15, 34, 34, 0.08);
+            transition: var(--transition-bounce);
+            box-shadow: var(--shadow-md);
             backdrop-filter: blur(3px);
             opacity: 0;
             transform: translateY(40px);
@@ -1299,9 +1519,13 @@
         }
 
         .event-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 24px 45px rgba(15, 34, 34, 0.16);
-            border-color: rgba(201, 169, 97, 0.45);
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-secondary);
+        }
+
+        body.dark-mode .event-card:hover {
+            background: #333;
         }
 
         .event-date {

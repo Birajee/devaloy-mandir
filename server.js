@@ -1,6 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const fs = require('fs/promises');
 const path = require('path');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,6 +11,39 @@ const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'change-me';
 
 app.use(express.json());
 app.use(express.static(__dirname));
+
+// --- Stripe Checkout Endpoint ---
+app.post('/api/create-checkout-session', async (req, res) => {
+  try {
+    const { amount, name, email, type } = req.body;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `Donation to Devaloy Mandir (${type})`,
+              description: `Generous support from ${name}`,
+            },
+            unit_amount: Math.round(parseFloat(amount) * 100), // Stripe expects cents
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      customer_email: email,
+      success_url: `${req.headers.origin}/?success=true`,
+      cancel_url: `${req.headers.origin}/?canceled=true`,
+    });
+
+    res.json({ id: session.id });
+  } catch (error) {
+    console.error('Stripe Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 async function readEventsFile() {
   const raw = await fs.readFile(EVENTS_FILE, 'utf8');
